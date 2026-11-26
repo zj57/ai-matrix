@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>酷我音乐竞品分析（截至2026年11月）</title>
+  <style>
+    :root {
+      --blue: #1677FF;
+      --blue-light: #69B1FF;
+      --blue-deep: #4D8DFF;
+      --cyan: #2EE6C5;
+      --violet: #A78BFA;
+      --bg: #070B16;
+      --bg-elev: #0C1324;
+      --text: #F0F4FF;
+      --muted: #B4C0D9;
+      --line: rgba(105, 177, 255, 0.16);
+      --danger: #FF7A86;
+      --warn: #FFC857;
+      --radius: 16px;
+      --glass: rgba(14, 22, 42, 0.72);
+      --glass-border: rgba(105, 177, 255, 0.28);
+      --glow: 0 0 24px rgba(22, 119, 255, 0.22);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(22, 119, 255, 0.22), transparent 60%),
+        radial-gradient(900px 500px at 100% 8%, rgba(167, 139, 250, 0.16), transparent 55%),
+        radial-gradient(800px 500px at 80% 80%, rgba(46, 230, 197, 0.08), transparent 50%),
+        var(--bg);
+      color: var(--text);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "WenQuanYi Micro Hei", sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: #8EC2FF; }
+    a:hover { color: var(--cyan); }
+    a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .wrap {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+    .hero {
+      position: relative;
+      color: #fff;
+      padding: 64px 0 40px;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(0, 62, 179, 0.45) 0%, rgba(22, 119, 255, 0.18) 48%, rgba(46, 230, 197, 0.08) 100%);
+      pointer-events: none;
+    }
+    .hero-bg::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -40% 40%;
+      height: 80%;
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.22), transparent 65%);
+    }
+    .hero-inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+    .hero-copy { flex: 1; min-width: 0; }
+    .hero h1 {
+      margin: 0 0 16px;
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      line-height: 1.2;
+      text-shadow: 0 0 32px rgba(22, 119, 255, 0.45);
+    }
+    .hero .summary {
+      margin: 0;
+      max-width: 46em;
+      font-size: 16px;
+      line-height: 1.8;
+      color: rgba(240, 244, 255, 0.92);
+    }
+    .hero-visual {
+      flex: none;
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+    .vinyl {
+      width: 168px;
+      height: 168px;
+      border-radius: 50%;
+      background:
+        repeating-radial-gradient(circle at 50% 50%,
+          #0a0c12 0 2px,
+          #161925 2px 4px,
+          #0c0e16 4px 7px);
+      box-shadow:
+        0 0 0 6px #151a28,
+        0 0 0 8px rgba(105, 177, 255, 0.35),
+        0 16px 40px rgba(0, 0, 0, 0.55),
+        0 0 36px rgba(22, 119, 255, 0.35);
+      position: relative;
+      animation: spin 9s linear infinite;
+    }
+    .vinyl::before {
+      content: "";
+      position: absolute;
+      inset: 58px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1677FF, #003EB3 55%, #2EE6C5);
+      box-shadow: inset 0 0 0 4px rgba(7, 11, 22, 0.35);
+    }
+    .vinyl::after {
+      content: "";
+      position: absolute;
+      inset: 78px;
+      border-radius: 50%;
+      background: #070B16;
+      box-shadow: 0 0 0 2px rgba(46, 230, 197, 0.7);
+    }
+    .eq {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 4px;
+      height: 36px;
+      width: 168px;
+    }
+    .eq span {
+      flex: 1;
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(180deg, var(--cyan), var(--blue));
+      transform-origin: center bottom;
+      animation: eq 1.05s ease-in-out infinite alternate;
+    }
+    .eq span:nth-child(1) { animation-duration: 0.72s; }
+    .eq span:nth-child(2) { animation-duration: 0.96s; animation-delay: -0.1s; }
+    .eq span:nth-child(3) { animation-duration: 0.64s; animation-delay: -0.2s; }
+    .eq span:nth-child(4) { animation-duration: 1.12s; }
+    .eq span:nth-child(5) { animation-duration: 0.8s; animation-delay: -0.15s; }
+    .eq span:nth-child(6) { animation-duration: 0.7s; animation-delay: -0.3s; }
+    .eq span:nth-child(7) { animation-duration: 1s; }
+    .eq span:nth-child(8) { animation-duration: 0.86s; animation-delay: -0.25s; }
+    .eq span:nth-child(9) { animation-duration: 0.68s; }
+    .eq span:nth-child(10) { animation-duration: 0.9s; animation-delay: -0.05s; }
+    .eq span:nth-child(11) { animation-duration: 0.75s; }
+    .eq span:nth-child(12) { animation-duration: 1.05s; animation-delay: -0.2s; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes eq {
+      from { transform: scaleY(0.28); opacity: 0.7; }
+      to { transform: scaleY(1); opacity: 1; }
+    }
+    nav.toc {
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      box-shadow: var(--glow), 0 12px 40px rgba(0, 0, 0, 0.35);
+      padding: 18px 22px;
+      margin: 24px auto 28px;
+      position: relative;
+    }
+    nav.toc .toc-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+    nav.toc ol {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      counter-reset: toc;
+    }
+    nav.toc li { counter-increment: toc; }
+    nav.toc a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      background: rgba(22, 119, 255, 0.12);
+      color: var(--blue-light);
+      border: 1px solid rgba(105, 177, 255, 0.22);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    nav.toc a:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 16px rgba(46, 230, 197, 0.28);
+      transform: translateY(-1px);
+    }
+    nav.toc a::before {
+      content: counter(toc, decimal-leading-zero);
+      display: inline-grid;
+      place-items: center;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .lead { margin: 0 0 16px; color: var(--text); }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+    .metric {
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius);
+      padding: 18px 18px 16px;
+      border: 1px solid var(--glass-border);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 20px rgba(22, 119, 255, 0.16), 0 10px 28px rgba(0,0,0,0.28);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .metric:hover {
+      transform: translateY(-4px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 0 28px rgba(46, 230, 197, 0.28), 0 14px 32px rgba(0,0,0,0.35);
+    }
+    .metric.danger {
+      border-color: rgba(255, 122, 134, 0.45);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 20px rgba(255, 122, 134, 0.22);
+    }
+    .metric .value {
+      font-size: 30px;
+      font-weight: 700;
+      color: #D6E8FF;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      text-shadow: 0 0 18px rgba(22, 119, 255, 0.55);
+    }
+    .metric.danger .value {
+      color: var(--danger);
+      text-shadow: 0 0 18px rgba(255, 122, 134, 0.45);
+    }
+    .metric .label { margin-top: 8px; font-weight: 600; font-size: 14px; color: var(--text); }
+    .metric .detail { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    section.block { margin: 0 0 48px; scroll-margin-top: 16px; counter-increment: track; }
+    body { counter-reset: track; }
+    section.block > h2 {
+      margin: 0 0 16px;
+      font-size: 24px;
+      font-weight: 650;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    section.block > h2::before {
+      content: "TRACK " counter(track, decimal-leading-zero);
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Noto Sans Mono CJK SC", monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--cyan);
+      text-shadow: 0 0 10px rgba(46, 230, 197, 0.45);
+    }
+    h3 { margin: 0 0 10px; font-size: 16px; font-weight: 650; color: #F0F4FF; }
+    .caption { margin: 8px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .grid-2, .grid-3 { display: grid; gap: 14px; }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.28);
+      padding: 16px 18px 18px;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(46, 230, 197, 0.4);
+      box-shadow: 0 0 24px rgba(22, 119, 255, 0.22), 0 16px 32px rgba(0,0,0,0.4);
+    }
+    .card.insight { border-top: 3px solid var(--cyan); }
+    .props { margin: 0; }
+    .props div {
+      display: grid;
+      grid-template-columns: 6.5em 1fr;
+      gap: 8px 12px;
+      padding: 8px 0;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .props div:first-child { border-top: 0; padding-top: 0; }
+    .props dt { margin: 0; color: var(--muted); font-weight: 500; }
+    .props dd { margin: 0; color: var(--text); }
+    .note { margin: 14px 0 0; color: var(--text); font-size: 14px; line-height: 1.75; }
+    .chart-svg { width: 100%; height: auto; display: block; }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px 18px; margin: 0 0 8px; font-size: 12px; color: var(--muted); }
+    .legend i {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: -1px;
+    }
+    .pie-wrap { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .pie-wrap .chart-svg { width: 220px; flex: none; }
+    .pie-legend { font-size: 13px; color: var(--text); }
+    .pie-legend div { margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+    .swatch { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--glass);
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.28);
+      overflow: hidden;
+      font-size: 14px;
+    }
+    .table-scroll { overflow-x: auto; }
+    table.data th, table.data td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    table.data th {
+      background: rgba(22, 119, 255, 0.18);
+      color: var(--blue-light);
+      font-weight: 600;
+      font-size: 13px;
+    }
+    table.data tr:nth-child(even) td { background: rgba(255, 255, 255, 0.025); }
+    table.data tr:last-child td { border-bottom: 0; }
+    table.data .emph { font-weight: 600; color: #F7FBFF; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 1px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+    .tag-high { background: rgba(255, 122, 134, 0.16); color: var(--danger); box-shadow: 0 0 10px rgba(255, 122, 134, 0.2); }
+    .tag-mid { background: rgba(255, 200, 87, 0.14); color: var(--warn); }
+    .tag-warn { background: rgba(255, 200, 87, 0.14); color: var(--warn); }
+    .callout {
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin: 16px 0 0;
+    }
+    .callout.warning {
+      background: rgba(255, 200, 87, 0.1);
+      border: 1px solid rgba(255, 200, 87, 0.35);
+    }
+    .callout.info {
+      background: rgba(46, 230, 197, 0.08);
+      border: 1px solid rgba(46, 230, 197, 0.32);
+      margin-bottom: 14px;
+    }
+    .callout .lead { font-weight: 700; margin: 0 0 4px; }
+    .callout.warning .lead { color: var(--warn); }
+    .callout.info .lead { color: var(--cyan); }
+    .callout p { margin: 0; font-size: 14px; color: var(--text); }
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 0 0 16px;
+      flex-wrap: wrap;
+    }
+    .flow-box {
+      background: rgba(14, 22, 42, 0.8);
+      border: 1px solid rgba(105, 177, 255, 0.35);
+      color: var(--blue-light);
+      font-weight: 650;
+      border-radius: 12px;
+      padding: 12px 22px;
+      box-shadow: 0 0 18px rgba(22, 119, 255, 0.18);
+      min-width: 8.5em;
+      text-align: center;
+    }
+    .flow-arrow { color: var(--cyan); font-size: 22px; font-weight: 700; }
+    .sources { list-style: none; margin: 0; padding: 0; counter-reset: src; }
+    .sources li {
+      counter-increment: src;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+      padding: 12px 16px 12px 48px;
+      margin: 0 0 8px;
+      position: relative;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+    .sources li:hover {
+      transform: translateY(-3px);
+      border-color: rgba(46, 230, 197, 0.4);
+      box-shadow: 0 0 20px rgba(22, 119, 255, 0.22);
+    }
+    .sources li::before {
+      content: counter(src);
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      color: #fff;
+      font-size: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 600;
+    }
+    .sources a { text-decoration: none; font-weight: 600; color: #9CC7FF; }
+    .sources a:hover { text-decoration: underline; color: var(--cyan); }
+    .sources .meta { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .back-top {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      color: #fff;
+      text-decoration: none;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 20px rgba(22, 119, 255, 0.45);
+      font-size: 18px;
+      z-index: 10;
+    }
+    .back-top span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    footer.page-end { height: 32px; }
+    .js-motion .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    .js-motion .reveal.in {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    @media (max-width: 900px) {
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+      .hero h1 { font-size: 30px; }
+    }
+    @media (max-width: 680px) {
+      .wrap { width: calc(100% - 28px); }
+      .hero { padding: 36px 0 56px; }
+      .hero-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .hero-visual { width: 100%; flex-direction: row; justify-content: flex-start; gap: 18px; }
+      .vinyl { width: 96px; height: 96px; }
+      .vinyl::before { inset: 32px; }
+      .vinyl::after { inset: 44px; }
+      .eq { width: auto; flex: 1; height: 40px; max-width: 180px; }
+      .hero h1 { font-size: 26px; }
+      .metrics, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      nav.toc { padding: 14px 14px; }
+      .props div { grid-template-columns: 1fr; gap: 2px; }
+      .pie-wrap { justify-content: center; }
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      .metric .value { font-size: 26px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .vinyl, .eq span { animation: none !important; }
+      .vinyl { transform: rotate(-18deg); }
+      .eq span { transform: scaleY(0.7); }
+      .js-motion .reveal, .js-motion .reveal.in {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .card:hover, .metric:hover, .sources li:hover, nav.toc a:hover {
+        transform: none;
+      }
+    }
+  </style>
+  <script>
+    (function () {
+      var reduce = false;
+      try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+      var shot = false;
+      try { shot = new URLSearchParams(location.search).has("shot"); } catch (e2) {}
+      if (!reduce && !shot) document.documentElement.classList.add("js-motion");
+    })();
+  </script>
+</head>
+<body>
+  <header class="hero" id="top">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <h1>酷我音乐竞品分析</h1>
+        <p class="summary">面向产品总监：酷我是腾讯音乐旗下以“好音质”和家庭、车载、有声场景立身的第三品牌，规模在缩小，但定位清晰。数据截至2026年11月，查不到的写“未公开”，推断单独标注。</p>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="vinyl"></div>
+        <div class="eq"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <nav class="toc reveal" aria-label="目录">
+      <p class="toc-label">目录</p>
+      <ol>
+        <li><a href="#s2">规模速览</a></li>
+        <li><a href="#s3">核心功能</a></li>
+        <li><a href="#s4">目标用户</a></li>
+        <li><a href="#s6">解决了用户哪些问题</a></li>
+        <li><a href="#s7">主要劣势</a></li>
+        <li><a href="#s8">总体启发</a></li>
+        <li><a href="#s11">参考来源</a></li>
+      </ol>
+    </nav>
+
+    <p class="lead reveal">规划前先看规模、评分和会员标价这组已核实的公开数字。</p>
+    <div class="metrics reveal">
+      <div class="metric">
+        <div class="value">0.95 亿</div>
+        <div class="label">月活</div>
+        <div class="detail">约数；QuestMobile，2026年6月</div>
+      </div>
+      <div class="metric danger">
+        <div class="value">-18.5%</div>
+        <div class="label">同比</div>
+        <div class="detail">五大音乐 App 中掉幅最大</div>
+      </div>
+      <div class="metric">
+        <div class="value">4.8</div>
+        <div class="label">App Store 评分</div>
+        <div class="detail">约 50 万个评分，2026年11月</div>
+      </div>
+      <div class="metric">
+        <div class="value">30 元/月</div>
+        <div class="label">超级会员</div>
+        <div class="detail">App Store 标价，2026年11月</div>
+      </div>
+    </div>
+
+    <section class="block reveal" id="s2">
+      <h2>规模速览</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>2026年3月至6月月活变化</h3>
+          <div class="legend">
+            <span><i style="background:#1677FF"></i>2026年3月</span>
+            <span><i style="background:#2EE6C5"></i>2026年6月</span>
+          </div>
+          <svg class="chart-svg" viewBox="0 0 560 320" role="img" aria-label="2026年3月至6月月活变化，单位亿">
+            <line x1="56" y1="28" x2="56" y2="248" stroke="#2A3550" stroke-width="1"/>
+            <line x1="56" y1="248" x2="540" y2="248" stroke="#2A3550" stroke-width="1"/>
+            <line x1="56" y1="193" x2="540" y2="193" stroke="#1C2538" stroke-width="1"/>
+            <line x1="56" y1="138" x2="540" y2="138" stroke="#1C2538" stroke-width="1"/>
+            <line x1="56" y1="83" x2="540" y2="83" stroke="#1C2538" stroke-width="1"/>
+            <text x="48" y="252" text-anchor="end" font-size="11" fill="#B4C0D9">0</text>
+            <text x="48" y="197" text-anchor="end" font-size="11" fill="#B4C0D9">0.60</text>
+            <text x="48" y="142" text-anchor="end" font-size="11" fill="#B4C0D9">1.20</text>
+            <text x="48" y="87" text-anchor="end" font-size="11" fill="#B4C0D9">1.80</text>
+            <text x="48" y="32" text-anchor="end" font-size="11" fill="#B4C0D9">2.40</text>
+            <!-- 酷狗: 2.05 / 1.94；组中心 116.5 -->
+            <rect x="86" y="59.92" width="28" height="188.08" rx="3" fill="#1677FF"/>
+            <rect x="118" y="70.00" width="28" height="178.00" rx="3" fill="#2EE6C5"/>
+            <text x="100" y="52" text-anchor="middle" font-size="10" fill="#E8EEFA">2.05</text>
+            <text x="132" y="63" text-anchor="middle" font-size="10" fill="#E8EEFA">1.94</text>
+            <text x="116" y="268" text-anchor="middle" font-size="12" fill="#E8EEFA">酷狗</text>
+            <!-- QQ: 2.01 / 1.89；组中心 237.5 -->
+            <rect x="207" y="63.58" width="28" height="184.42" rx="3" fill="#1677FF"/>
+            <rect x="239" y="74.58" width="28" height="173.42" rx="3" fill="#2EE6C5"/>
+            <text x="221" y="56" text-anchor="middle" font-size="10" fill="#E8EEFA">2.01</text>
+            <text x="253" y="67" text-anchor="middle" font-size="10" fill="#E8EEFA">1.89</text>
+            <text x="237" y="268" text-anchor="middle" font-size="12" fill="#E8EEFA">QQ音乐</text>
+            <!-- 汽水: 1.56 / 1.67 -->
+            <rect x="328" y="104.83" width="28" height="143.17" rx="3" fill="#1677FF"/>
+            <rect x="360" y="94.75" width="28" height="153.25" rx="3" fill="#2EE6C5"/>
+            <text x="342" y="97" text-anchor="middle" font-size="10" fill="#E8EEFA">1.56</text>
+            <text x="374" y="87" text-anchor="middle" font-size="10" fill="#E8EEFA">1.67</text>
+            <text x="358" y="268" text-anchor="middle" font-size="12" fill="#E8EEFA">汽水</text>
+            <!-- 网易云: 1.47 / 1.49 -->
+            <rect x="449" y="113.08" width="28" height="134.92" rx="3" fill="#1677FF"/>
+            <rect x="481" y="111.25" width="28" height="136.75" rx="3" fill="#2EE6C5"/>
+            <text x="463" y="105" text-anchor="middle" font-size="10" fill="#E8EEFA">1.47</text>
+            <text x="495" y="104" text-anchor="middle" font-size="10" fill="#E8EEFA">1.49</text>
+            <text x="479" y="268" text-anchor="middle" font-size="12" fill="#E8EEFA">网易云</text>
+          </svg>
+          <p class="caption">单位：亿，均为约数。酷狗、QQ、汽水、网易云有两端数据；酷我 3 月绝对月活在已查公开报道中未给出，故未列入。</p>
+        </div>
+        <div class="card">
+          <h3>2026年6月音乐 App 月活</h3>
+          <svg class="chart-svg" viewBox="0 0 560 280" role="img" aria-label="2026年6月音乐 App 月活">
+            <!-- max 1.94, track from x=92 to 455, width 363; labels sit in the right gutter -->
+            <text x="84" y="36" text-anchor="end" font-size="13" fill="#E8EEFA">酷狗</text>
+            <rect x="92" y="22" width="363" height="22" rx="4" fill="#4D8DFF"/>
+            <text x="463" y="38" font-size="12" fill="#E8EEFA">1.94 亿</text>
+            <text x="84" y="84" text-anchor="end" font-size="13" fill="#E8EEFA">QQ音乐</text>
+            <rect x="92" y="70" width="354" height="22" rx="4" fill="#4D8DFF"/>
+            <text x="454" y="86" font-size="12" fill="#E8EEFA">1.89 亿</text>
+            <text x="84" y="132" text-anchor="end" font-size="13" fill="#E8EEFA">汽水</text>
+            <rect x="92" y="118" width="312" height="22" rx="4" fill="#4D8DFF"/>
+            <text x="412" y="134" font-size="12" fill="#E8EEFA">1.67 亿</text>
+            <text x="84" y="180" text-anchor="end" font-size="13" fill="#E8EEFA">网易云</text>
+            <rect x="92" y="166" width="279" height="22" rx="4" fill="#4D8DFF"/>
+            <text x="379" y="182" font-size="12" fill="#E8EEFA">1.49 亿</text>
+            <text x="84" y="228" text-anchor="end" font-size="13" fill="#E8EEFA" font-weight="700">酷我</text>
+            <rect x="92" y="214" width="178" height="22" rx="4" fill="#2EE6C5"/>
+            <text x="278" y="230" font-size="12" fill="#2EE6C5" font-weight="700">0.95 亿</text>
+          </svg>
+          <p class="caption">单位：亿，均为约数。酷我在五个 App 中规模最小。</p>
+        </div>
+      </div>
+      <p class="note">3 月数据来自 QuestMobile，199IT（2026年4月29日）转引：酷狗 2.05 亿、QQ音乐 2.01 亿、汽水 15605 万（图中记为 1.56 亿）、网易云 14682 万（图中记为 1.47 亿）；同文写明酷我同比下滑 15.4%，但未给出绝对月活，因此未采用“约 1.10 亿”的说法。6 月酷狗约 1.94 亿、QQ音乐约 1.89 亿、酷我约 0.95 亿、汽水 1.67 亿来自 QuestMobile，21经济网（2026年8月13日）转引；网易云 6 月 1.49 亿来自同一套 QuestMobile 数据，新浪财经（2026年8月31日）转引。</p>
+    </section>
+
+    <section class="block reveal" id="s3">
+      <h2>核心功能</h2>
+      <div class="grid-3">
+        <article class="card">
+          <h3>曲库</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>与 QQ音乐、酷狗共享 TME 获授权曲库；酷我独有曲库规模未公开</dd></div>
+            <div><dt>来源与时间</dt><dd>TME 招股材料（2022）</dd></div>
+            <div><dt>备注</dt><dd>第三方称 6000 万首以上（2026年6月，未核实）；酷我自述 3000 万首以上（2021年）</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>无损与高解析</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>支持 192kHz 与 FLAC；至臻音质、杜比全景声、经典黑胶、Hi-Res；新增 HiFi 专区，引入 DG、ECM、DECCA 等厂牌</dd></div>
+            <div><dt>来源与时间</dt><dd>凤凰网转载新闻稿（2025年11月13日）</dd></div>
+            <div><dt>备注</dt><dd>12.0 版本；DTS 未查到相关公开信息</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>臻品音质</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>至臻音质 2.0、至臻母带、至臻全景声三档；官方称基于数字音乐增强引擎提升采样率</dd></div>
+            <div><dt>来源与时间</dt><dd>河南热线转载（2023年11月）</dd></div>
+            <div><dt>备注</dt><dd>超级会员权益；第三方评测称母带类为算法增强而非原始母带</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>播放器与硬件</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>USB 独占模式、输出位深与采样率自定义、最大音量锁定</dd></div>
+            <div><dt>来源与时间</dt><dd>凤凰网（2025年11月）</dd></div>
+            <div><dt>备注</dt><dd>面向外接解码器与车载 HiFi</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>音效</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>蝰蛇音效（3D 环绕、虚拟现场、超重低音、纯净人声）、AI 智能音效、一键 HiFi 音效</dd></div>
+            <div><dt>来源与时间</dt><dd>河南热线（2023年11月）；小度生活操作指引</dd></div>
+            <div><dt>备注</dt><dd>AI 智能音效按歌曲自动适配</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>个性化推荐</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>基于听歌习惯每日生成专属歌单；听歌识曲与哼唱识别</dd></div>
+            <div><dt>来源与时间</dt><dd>App Store 介绍（版本 12.2.6）</dd></div>
+            <div><dt>备注</dt><dd>第三方评价推荐算法一般（什么值得买，2026年6月，主观）；酷我推荐效果无公开数据</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>听书与有声</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>有声读物、小说、相声曲艺、儿童故事；听书 VIP 可在手机与电脑使用，车载端暂无</dd></div>
+            <div><dt>来源与时间</dt><dd>App Store；酷我会员常见问题页（未标注日期）</dd></div>
+            <div><dt>备注</dt><dd>集团 2026年5月完成喜马拉雅并表，与酷我的联动未公开</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>K歌、直播、社交</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>酷我设有直播标签与酷我直播；K歌主要由全民K歌承担</dd></div>
+            <div><dt>来源与时间</dt><dd>TME 招股材料（2022）</dd></div>
+            <div><dt>备注</dt><dd>酷我社交功能当前状态未查到；第三方称社区功能弱</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>车载与多端</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>2016年起布局车载，覆盖 60 多家车企；收藏跨端同步；手机、电脑可用</dd></div>
+            <div><dt>来源与时间</dt><dd>新华网（2021年11月，酷我自述）；App Store</dd></div>
+            <div><dt>备注</dt><dd>车载用户数据已过时，当前数据未公开</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>会员体系</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>音乐包、豪华VIP、豪华VIP+听书、超级会员、听书会员；豪华VIP 含付费曲库、无损、每月 300 首下载、免部分广告</dd></div>
+            <div><dt>来源与时间</dt><dd>App Store 内购价目；酷我会员页</dd></div>
+            <div><dt>备注</dt><dd>详见下表；超级会员含臻品音质类权益</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>免费听歌模式</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>酷我自身的免费听歌模式未查到官方说明</dd></div>
+            <div><dt>来源与时间</dt><dd>—</dd></div>
+            <div><dt>备注</dt><dd>TME 2026年8月13日另行推出独立的“免费音乐”App（任务换听歌），不是酷我功能</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>AI 功能</h3>
+          <dl class="props">
+            <div><dt>查到的内容</dt><dd>AI 智能音效（2023年起）；每日个性化推荐</dd></div>
+            <div><dt>来源与时间</dt><dd>河南热线；App Store</dd></div>
+            <div><dt>备注</dt><dd>未查到酷我的 AI 生成或 AI 助手功能；集团层面有 AI 音乐制作平台、多模态大模型推荐，均未标明落在酷我</dd></div>
+          </dl>
+        </article>
+      </div>
+      <h3 style="margin:22px 0 12px">会员档位</h3>
+      <div class="table-scroll">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>会员档位</th>
+              <th>官方价（App Store，2026年11月）</th>
+              <th>说明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>音乐包</td><td class="emph">8 元/月；25 元/3月；45 元/6月；88 元/年</td><td>基础付费曲库</td></tr>
+            <tr><td>豪华VIP</td><td class="emph">连续包月 15 元；单月 18 元；3 月 45 元；6 月 88 元；年 168 元</td><td>含无损、每月 300 首下载</td></tr>
+            <tr><td>豪华VIP+听书</td><td class="emph">单月 19 元</td><td>音乐加有声捆绑</td></tr>
+            <tr><td>超级会员</td><td class="emph">连续包月 30 元</td><td>第三方称为 25 元，口径不一致，以应用商店为准</td></tr>
+            <tr><td>听书会员、长音频</td><td class="emph">连续包月各 8 元</td><td>有声书相关权益</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block reveal" id="s4">
+      <h2>目标用户</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>城市层级</h3>
+          <div class="pie-wrap">
+            <svg class="chart-svg" viewBox="0 0 200 200" role="img" aria-label="城市层级：二线及以下 75.3%，一线与新一线 24.7%">
+              <path d="M 100 100 L 100 16 A 84 84 0 1 1 16.02 97.75 Z" fill="#1677FF"/>
+              <path d="M 100 100 L 16.02 97.75 A 84 84 0 0 1 100 16 Z" fill="#A78BFA"/>
+              <circle cx="100" cy="100" r="48" fill="#121A2C"/>
+            </svg>
+            <div class="pie-legend">
+              <div><span class="swatch" style="background:#1677FF"></span>二线及以下 75.3%</div>
+              <div><span class="swatch" style="background:#A78BFA"></span>一线与新一线 24.7%</div>
+            </div>
+          </div>
+          <p class="caption">Fastdata 极数《2020年中国在线音乐行业报告》，2020年10月；公开数据，已过时</p>
+        </div>
+        <div class="card">
+          <h3>年龄分布</h3>
+          <svg class="chart-svg" viewBox="0 0 560 180" role="img" aria-label="年龄分布">
+            <text x="100" y="32" text-anchor="end" font-size="13" fill="#E8EEFA">25–34 岁</text>
+            <rect x="112" y="16" width="362" height="22" rx="4" fill="#1677FF"/>
+            <text x="482" y="33" font-size="12" fill="#E8EEFA">45.2%</text>
+            <text x="100" y="80" text-anchor="end" font-size="13" fill="#E8EEFA">35–44 岁</text>
+            <rect x="112" y="64" width="298" height="22" rx="4" fill="#4D8DFF"/>
+            <text x="418" y="81" font-size="12" fill="#E8EEFA">37.3%</text>
+            <text x="100" y="128" text-anchor="end" font-size="13" fill="#E8EEFA">45 岁以上</text>
+            <rect x="112" y="112" width="35" height="22" rx="4" fill="#A78BFA"/>
+            <text x="155" y="129" font-size="12" fill="#E8EEFA">4.4%</text>
+          </svg>
+          <p class="caption">MobTech《2020中国移动音乐行业报告》，2020年9月；公开数据，已过时。加总不足 100%，其余年龄未披露。</p>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top:14px">
+        <article class="card">
+          <h3>性别</h3>
+          <dl class="props">
+            <div><dt>数据</dt><dd>男性 65.4%</dd></div>
+            <div><dt>来源与时间</dt><dd>MobTech《2020中国移动音乐行业报告》，2020年9月</dd></div>
+            <div><dt>性质</dt><dd><span class="tag tag-warn">公开数据，已过时</span></dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>婚育</h3>
+          <dl class="props">
+            <div><dt>数据</dt><dd>已婚 70.7%；有未成年子女者偏好度更高</dd></div>
+            <div><dt>来源与时间</dt><dd>同上</dd></div>
+            <div><dt>性质</dt><dd><span class="tag tag-warn">公开数据，已过时</span></dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>典型用户</h3>
+          <dl class="props">
+            <div><dt>数据</dt><dd>36 岁、二线城市、政府或事业单位人员、有房有车，常为子女听儿歌</dd></div>
+            <div><dt>来源与时间</dt><dd>MobTech，2020年9月</dd></div>
+            <div><dt>性质</dt><dd>报告的拟人画像</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>家庭与中老年占优</h3>
+          <dl class="props">
+            <div><dt>数据</dt><dd>聚焦车载、学习、睡眠场景和长尾内容的家庭用户及中老年</dd></div>
+            <div><dt>来源与时间</dt><dd>国信证券，2025年6月（依据 QuestMobile）</dd></div>
+            <div><dt>性质</dt><dd>定性判断，无具体比例</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>价格敏感度</h3>
+          <dl class="props">
+            <div><dt>数据</dt><dd>未查到酷我专项数据</dd></div>
+            <div><dt>来源与时间</dt><dd>—</dd></div>
+            <div><dt>性质</dt><dd>分析推断：音质与有声类用户为内容付费意愿较强，轻度用户价格敏感</dd></div>
+          </dl>
+        </article>
+      </div>
+      <aside class="callout warning">
+        <p class="lead">使用提醒</p>
+        <p>画像数据多来自 2020 年，已距今 6 年；2026 年月活下滑 15% 至 19% 说明用户结构可能已变化。建议用后台数据重做画像，再作决策依据。</p>
+      </aside>
+    </section>
+
+    <section class="block reveal" id="s6">
+      <h2>解决了用户哪些问题</h2>
+      <div class="flow" aria-label="用户痛点到效果与证据">
+        <div class="flow-box">用户痛点</div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div class="flow-box">酷我的解法</div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div class="flow-box">效果与证据</div>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <h3>难找到真实无损或母带资源，假无损多</h3>
+          <dl class="props">
+            <div><dt>酷我的解法</dt><dd>无损、母带、HiFi 专区、一键提升音质、独占模式组成音质链路</dd></div>
+            <div><dt>效果与证据</dt><dd>酷我 2016 年称听无损用户占比超 20%（界面新闻，2016）；当前转化与留存未公开</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>开车时想要免视觉操作的音乐和有声内容</h3>
+          <dl class="props">
+            <div><dt>酷我的解法</dt><dd>车载版、千车千面推荐、车企定制榜单</dd></div>
+            <div><dt>效果与证据</dt><dd>酷我自述车载用户 6000 万以上、月活 3000 万以上（2021年）；无新数据</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>家里同时要给孩子听儿歌、自己听书</h3>
+          <dl class="props">
+            <div><dt>酷我的解法</dt><dd>儿歌、儿童故事、有声书、相声同一 App；豪华VIP+听书捆绑 19 元</dd></div>
+            <div><dt>效果与证据</dt><dd>App Store 内容与价目可查；使用数据未公开</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>不同预算和用量对应不同会员</h3>
+          <dl class="props">
+            <div><dt>酷我的解法</dt><dd>音乐包 8 元、豪华VIP 15 元、超级会员 30 元的分层</dd></div>
+            <div><dt>效果与证据</dt><dd>价目可查；集团超级会员 2025年底超 2000 万，酷我占比未公开</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>多设备续听</h3>
+          <dl class="props">
+            <div><dt>酷我的解法</dt><dd>收藏多端同步</dd></div>
+            <div><dt>效果与证据</dt><dd>App Store 描述；效果无数据</dd></div>
+          </dl>
+        </article>
+        <article class="card">
+          <h3>听不出歌名</h3>
+          <dl class="props">
+            <div><dt>酷我的解法</dt><dd>听歌识曲与哼唱识别</dd></div>
+            <div><dt>效果与证据</dt><dd>App Store 描述；效果无数据</dd></div>
+          </dl>
+        </article>
+      </div>
+      <p class="note">说明：效果一列仅填写查到的证据，未查到的不推算。</p>
+    </section>
+
+    <section class="block reveal" id="s7">
+      <h2>主要劣势</h2>
+      <div class="table-scroll">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>程度</th>
+              <th>劣势</th>
+              <th>关键证据</th>
+              <th>对我们的启示</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tag tag-high">高</span></td>
+              <td>规模最小、掉得最快</td>
+              <td>QuestMobile 2026年6月月活约 0.95 亿，同比 -18.5%，五大音乐 App 中掉幅最大（21经济网转引）</td>
+              <td class="emph">不要把酷我当成增长引擎，下季度先守高价值场景。</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-high">高</span></td>
+              <td>开屏可误跳，付费也不能彻底免广告</td>
+              <td>《经济参考报》（2026年6月9日）和上游新闻（6月8日）实测酷我开屏可摇一摇跳转；客服称 SVIP 只是“一定程度减少”广告，不能彻底消除</td>
+              <td class="emph">免广告要说到做到，这是可做体验差异的地方。</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-high">高</span></td>
+              <td>会员扣费和客诉处理弱</td>
+              <td>黑猫投诉：酷我登上 2026年3月影音直播黑榜，关键词为“未登录未使用仍被自动扣费”；当月投诉 82 件，回复率 0%（2026年4月13日）</td>
+              <td class="emph">取消和退款路径要短，权益边界要一句话说清。</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-mid">中</span></td>
+              <td>AI 仍停在音效和歌单，缺少助手级能力</td>
+              <td>酷我公开可见的是 AI 智能音效（河南热线，2023年11月）和每日歌单；TME 2025Q4 财报写明 QQ 音乐已接入元宝，可用自然语言搜歌和购买</td>
+              <td class="emph">不要追全能工作室，可从开车、哄睡、学习等小场景助手切入。</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-mid">中</span></td>
+              <td>集团第三品牌，面临兄弟产品和新 App 分流</td>
+              <td>2026年8月13日 TME 上线独立“免费音乐”App，对标汽水（观察者网）；TME 2025Q4 将 QQ 与酷狗并称为综合应用，酷我未被单独定位</td>
+              <td class="emph">先和集团对齐获客分工，避免和免费 App 抢同一批轻度用户。</td>
+            </tr>
+            <tr>
+              <td><span class="tag tag-mid">中</span></td>
+              <td>社区与推荐不是长板</td>
+              <td>什么值得买（2026年6月9日，含 AI 生成提示）称酷我“社区功能几乎为零，个性化推荐算法一般”</td>
+              <td class="emph">不必补完整社区，把推荐做准车载、哄睡、学习即可。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block reveal" id="s8">
+      <h2>总体启发</h2>
+      <aside class="callout info">
+        <p class="lead">下季度可执行的三条</p>
+        <p>综合前四节的功能、用户、解法与劣势，以下三条可直接用于规划。</p>
+      </aside>
+      <div class="grid-3">
+        <article class="card insight">
+          <h3>守场景，不拼曲库</h3>
+          <p class="note" style="margin-top:0">酷我的差异在听得见的音质，以及车载、哄娃、听书这些场景，不在曲库大小。下季度应选一到两个场景做成可感知的完整体验，先让用户免费听到或用到差异，再引导付费。</p>
+        </article>
+        <article class="card insight">
+          <h3>把会员和免广告做成可信承诺</h3>
+          <p class="note" style="margin-top:0">酷我的短板是档位多、扣费不清，开了超级会员仍去不掉广告。我们要把权益写成一句话、把取消和退款路径做短；凡是承诺免广告，就必须真正免掉。</p>
+        </article>
+        <article class="card insight">
+          <h3>AI 围绕高频场景，并先分清免费与付费</h3>
+          <p class="note" style="margin-top:0">用户偏家庭和中年，社区不是必补项，AI 也不必做成全能工作室。可先做开车、哄睡、学习时的一句话切歌或切歌单，同时先定清免费获客和付费体验怎么分工，避免自己抢自己的轻度用户。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="block reveal" id="s11">
+      <h2>参考来源</h2>
+      <ol class="sources">
+        <li><a href="https://filecache.investorroom.com/mr5irasia_tencent_sc/220/download/TME%204Q25%20CN%20ER_0317.pdf">腾讯音乐 2025年第四季度及全年财务业绩</a><span class="meta">TME 投资者关系 · 2026-03-17</span></li>
+        <li><a href="https://www.21jingji.com/article/20260813/herald/37db3fcb8a395db3edcc058cf0115e51.html">增收不增利、市值持续下探，腾讯音乐进入战略阵痛期（引 QuestMobile 2026年6月数据）</a><span class="meta">21经济网 · 2026-08-13</span></li>
+        <li><a href="https://www.199it.com/archives/1824918.html">QuestMobile：2026年3月汽水音乐月活1.56亿首超网易云音乐（含酷狗 2.05 亿、QQ音乐 2.01 亿、酷我同比 -15.4%）</a><span class="meta">199IT · 2026-04-29</span></li>
+        <li><a href="https://finance.sina.cn/stock/relnews/hk/2026-08-31/detail-iniqfkkr8828410.d.html">华为用户，终于能用上纯血网易云了（引 QuestMobile：网易云 2026年6月月活 1.49 亿）</a><span class="meta">新浪财经 · 2026-08-31</span></li>
+        <li><a href="https://www.guancha.cn/economy/2026_08_13_827185.shtml">腾讯音乐推出“免费音乐”APP，对标字节汽水音乐？</a><span class="meta">观察者网 · 2026-08-13</span></li>
+        <li><a href="https://www.jiemian.com/article/14911433.html">腾讯音乐内卷，汽水音乐后来居上？</a><span class="meta">界面新闻 · 2026-08-12</span></li>
+        <li><a href="https://apps.apple.com/cn/app/%E9%85%B7%E6%88%91%E9%9F%B3%E4%B9%90-%E5%A5%BD%E9%9F%B3%E8%B4%A8%E7%94%A8%E9%85%B7%E6%88%91/id588673713">酷我音乐 App Store 页面（版本 12.2.6、评分 4.8、内购价目）</a><span class="meta">Apple App Store · 2026-11</span></li>
+        <li><a href="https://tech.ifeng.com/c/8oF7fnnROtG">酷我音乐20周年焕新升级 12.0版本高音质内容生态全面扩容</a><span class="meta">凤凰网 · 2025-11-13</span></li>
+        <li><a href="https://henan.china.com/m/news/roll/2023/1127/112023_619461.html">音质音效升级，酷我音乐持续让用户纯粹听歌</a><span class="meta">河南热线 · 2023-11-27</span></li>
+        <li><a href="http://vip1.kuwo.cn/vip/added/vip_2016/index.jsp">酷我会员页与常见问题</a><span class="meta">酷我官网</span></li>
+        <li><a href="http://www.xinhuanet.com/auto/20211124/d33c381abd8847f0839b03bd7cf634b6/c.html">酷我车载音乐 打造个性化高品质的车内娱乐体验</a><span class="meta">新华网 · 2021-11-24</span></li>
+        <li><a href="https://www1.hkexnews.hk/listedco/listconews/sehk/2022/0915/10430477/2022091500114_c.pdf">TME 公告：我们平台提供的产品和服务（三大 App 官方定位）</a><span class="meta">港交所披露易 · 2022-09-15</span></li>
+        <li><a href="https://pdf.dfcfw.com/pdf/H3_AP202506191693601276_1.pdf?1750321324000.pdf=">在线音乐行业深度解析</a><span class="meta">国信证券（东方财富） · 2025-06-18</span></li>
+        <li><a href="https://pdf.dfcfw.com/pdf/H3_AP202011201431411871_1.pdf">2020中国移动音乐行业报告</a><span class="meta">MobTech（东方财富） · 2020-11</span></li>
+        <li><a href="https://pdf.dfcfw.com/pdf/H3_AP202011231431942901_1.pdf?1606124020000.pdf=">2020年中国在线音乐行业报告</a><span class="meta">Fastdata 极数（东方财富） · 2020-11</span></li>
+        <li><a href="https://www.jiemian.com/article/987109.html">2016音乐变化年：11年老牌音乐软件的思考和突围</a><span class="meta">界面新闻 · 2016</span></li>
+        <li><a href="https://post.smzdm.com/p/axk9kv53/">2026年别乱冲音乐会员，来看看哪个平台最良心</a><span class="meta">什么值得买（第三方，含 AI 生成提示） · 2026-06-09</span></li>
+        <li><a href="https://www.jjckb.cn/20260609/1f16ec3623034363b7385ada3cc63d0e/c.html">App开屏广告成“电子牛皮癬” 页面乱跳转（实测酷我开屏摇一摇，客服称 SVIP 不能彻底免广告）</a><span class="meta">经济参考网《经济参考报》 · 2026-06-09</span></li>
+        <li><a href="https://www.cqrb.cn/dy/media/xcq122/2026-06-08/2692853_pc.html">上游调查 | App开屏广告比“牛皮癬”还霸道：摇一摇就跳转，充钱也关不掉</a><span class="meta">重庆日报·上游新闻 · 2026-06-08</span></li>
+        <li><a href="https://finance.sina.com.cn/heimao/2026-04-13/doc-inhukeew2293875.shtml">3月黑猫投诉影音直播领域红黑榜：未登录未使用酷我音乐仍被自动扣费</a><span class="meta">黑猫投诉（新浪财经） · 2026-04-13</span></li>
+      </ol>
+    </section>
+    <footer class="page-end"></footer>
+  </div>
+  <a class="back-top" href="#top" title="返回顶部">↑<span>返回顶部</span></a>
+
+  <script>
+    (function () {
+      if (!document.documentElement.classList.contains("js-motion")) return;
+      if (!("IntersectionObserver" in window)) {
+        document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: "0px 0px -24px 0px" });
+      document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+    })();
+  </script>
+</body>
+</html>
